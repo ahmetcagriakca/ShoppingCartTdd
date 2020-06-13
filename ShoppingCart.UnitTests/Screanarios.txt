@@ -22,6 +22,14 @@ Scenario 4 - Category has a title.
 	Check category title for product category
 	
 Scenario 5 - Products are added to the Cart with quantity info. 
+	Products added to ShoppingCart 
+		category:food
+		productTitle:Apple
+		productPrice:100
+		quantity:3
+	Check Item Counts in ShoppingCart
+	Check Product in ShoppingCart
+	Check Product quantity in ShoppingCart
 
 Scenario 6 - Campaigns exist for product price discounts.
 	

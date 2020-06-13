@@ -1,6 +1,7 @@
 using System;
 using Xunit;
 using System.Linq;
+using ShoppingCart.UnitTests.Models;
 
 namespace ShoppingCart.UnitTests
 {
@@ -47,6 +48,27 @@ namespace ShoppingCart.UnitTests
             var category = new Category(title, parentCategory);
             Assert.Equal(category.ParentCategory, parentCategory);
             Assert.Equal(category.ParentCategory.Title, parentCategoryTitle);
+        }
+
+        /// <summary>
+        /// Add product to shopping cart with quantity
+        /// </summary>
+        [Theory]
+        [InlineData("food", "Apple", 100, 3)]
+        [InlineData("food", "Almond", 150, 3)]
+        public void Add_Product_To_ShoppingCart(string categoryTitle, string productTitle, double productPrice, int quantity)
+        {
+            // Category create
+            var category = new Category(categoryTitle);
+            // Product create with category
+            var product = new Product(productTitle, productPrice, category);
+            // Create new Shopping Cart
+            var cart = new Models.ShoppingCart();
+            // New Item added to cart
+            cart.AddItem(product, quantity);
+            Assert.True(cart.ItemCount() == 1);
+            Assert.True(cart.GetItems().First().Product == product);
+            Assert.True(cart.GetItems().First().Quantity == quantity);
         }
     }
 }

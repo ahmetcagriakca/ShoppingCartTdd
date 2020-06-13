@@ -1,4 +1,4 @@
-namespace ShoppingCart.UnitTests
+namespace ShoppingCart.UnitTests.Models
 {
     public class Product
     {
