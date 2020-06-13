@@ -17,6 +17,9 @@ Scenario 3 - Category may or may not have a parent category.
 	Check Parent category for category
 
 Scenario 4 - Category has a title. 
+	Check Category Title
+	Check Parent Category Title for category
+	Check category title for product category
 	
 Scenario 5 - Products are added to the Cart with quantity info. 
 

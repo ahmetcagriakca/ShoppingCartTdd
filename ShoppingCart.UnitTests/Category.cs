@@ -2,14 +2,17 @@ namespace ShoppingCart.UnitTests
 {
     public class Category
     {
+        public string Title { get; }
         public Category ParentCategory { get; }
 
-        public Category()
+        public Category(string title)
         {
+            Title = title;
         }
 
-        public Category(Category parentCategory)
+        public Category(string title, Category parentCategory)
         {
+            Title = title;
             ParentCategory = parentCategory;
         }
     }
