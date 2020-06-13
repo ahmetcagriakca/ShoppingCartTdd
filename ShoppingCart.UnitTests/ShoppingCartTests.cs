@@ -70,5 +70,15 @@ namespace ShoppingCart.UnitTests
             Assert.True(cart.GetItems().First().Product == product);
             Assert.True(cart.GetItems().First().Quantity == quantity);
         }
+
+        /// <summary>
+        /// Create Campaign
+        /// </summary>
+        [Fact]
+        public void Create_Campaign()
+        {
+            var campaign = new Campaign();
+            Assert.NotNull(campaign);
+        }
     }
 }

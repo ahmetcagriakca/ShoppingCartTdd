@@ -32,6 +32,7 @@ Scenario 5 - Products are added to the Cart with quantity info.
 	Check Product quantity in ShoppingCart
 
 Scenario 6 - Campaigns exist for product price discounts.
+	Check Campaign class
 	
 Scenario 7 - Campaigns are applicable to a product category.
 
