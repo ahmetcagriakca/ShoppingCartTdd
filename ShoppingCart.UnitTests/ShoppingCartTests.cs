@@ -81,14 +81,29 @@ namespace ShoppingCart.UnitTests
         [InlineData("food", 20.0, 3, DiscountType.Rate)]
         [InlineData("food", 50.0, 5, DiscountType.Rate)]
         [InlineData("food", 5.0, 5, DiscountType.Amount)]
-        public void Create_Campaign(string categoryTitle,double discountPercentage,int minimumItemCount,DiscountType discountType)
+        public void Create_Campaign(string categoryTitle, double discountPercentage, int minimumItemCount, DiscountType discountType)
         {
             var category = new Category(categoryTitle);
             var campaign = new Campaign(category, discountPercentage, minimumItemCount, discountType);
             Assert.NotNull(campaign);
             Assert.Equal(campaign.Category.Title, categoryTitle);
-            Assert.Equal(campaign.DiscountPercentage,discountPercentage);
+            Assert.Equal(campaign.DiscountPercentage, discountPercentage);
             Assert.Equal(campaign.MinimumItemCount, minimumItemCount);
+            Assert.Equal(campaign.DiscountType, discountType);
+        }
+
+        /// <summary>
+        /// Create Coupon for ShoppingCart discount
+        /// MinimumCartAmount, DiscountPercentage, DiscountType added to Coupon
+        /// </summary>
+        [Theory]
+        [InlineData(100, 10, DiscountType.Rate)]
+        public void Create_Coupon(double minimumCartAmount, int discountPercentage, DiscountType discountType)
+        {
+            var campaign = new Coupon(minimumCartAmount, discountPercentage, discountType);
+            Assert.NotNull(campaign);
+            Assert.Equal(campaign.MinimumCartAmount, minimumCartAmount);
+            Assert.Equal(campaign.DiscountPercentage, discountPercentage);
             Assert.Equal(campaign.DiscountType, discountType);
         }
     }

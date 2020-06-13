@@ -50,6 +50,13 @@ Scenario 8 - Campaign discount vary based on the number of products in the cart
 	Check DiscountType for Campaign
 
 Scenario 9 - Coupons exist for cart discounts.
+    Create Coupon for ShoppingCart discount
+    MinimumCartAmount, DiscountPercentage, DiscountType added to Coupon
+	MinimumCartAmount: 100, DiscountPercentage:10 , DiscountType: Rate
+	
+	Check MinimumCartAmount for Coupon
+	Check DiscountPercentage for Coupon
+	Check DiscountType for Coupon
 
 Scenario 10 - Coupons have minimum cart amount constraint. If Cart amount is less than minimum, discount is not applied.
 
