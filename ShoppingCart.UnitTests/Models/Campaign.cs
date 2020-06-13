@@ -5,15 +5,15 @@ namespace ShoppingCart.UnitTests.Models
     public class Campaign
     {
         public Category Category { get; }
-        public double DiscountPercentage { get; }
+        public double Discount { get; }
         public int MinimumItemCount { get; }
         public DiscountType DiscountType { get; }
 
 
-        public Campaign(Category category, in double discountPercentage, in int minimumItemCount, DiscountType discountType)
+        public Campaign(Category category, in double discount, in int minimumItemCount, DiscountType discountType)
         {
             Category = category;
-            DiscountPercentage = discountPercentage;
+            Discount = discount;
             MinimumItemCount = minimumItemCount;
             DiscountType = discountType;
         }

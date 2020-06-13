@@ -1,3 +1,6 @@
+using System;
+using System.Drawing;
+
 namespace ShoppingCart.UnitTests.Models
 {
     public class Category
@@ -5,7 +8,7 @@ namespace ShoppingCart.UnitTests.Models
         public string Title { get; }
         public Category ParentCategory { get; }
 
-        public Category(string title)
+        public Category(string title) : this(title, null)
         {
             Title = title;
         }

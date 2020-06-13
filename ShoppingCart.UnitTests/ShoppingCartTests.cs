@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Xunit;
 using System.Linq;
 using ShoppingCart.UnitTests.Models;
@@ -75,7 +77,7 @@ namespace ShoppingCart.UnitTests
         /// <summary>
         /// Create Campaign
         /// Campaign applicable for a category
-        /// DiscountPercentage, MinimumItemCount, DiscountType added to Campaign
+        /// Discount, MinimumItemCount, DiscountType added to Campaign
         /// </summary>
         [Theory]
         [InlineData("food", 20.0, 3, DiscountType.Rate)]
@@ -87,14 +89,14 @@ namespace ShoppingCart.UnitTests
             var campaign = new Campaign(category, discountPercentage, minimumItemCount, discountType);
             Assert.NotNull(campaign);
             Assert.Equal(campaign.Category.Title, categoryTitle);
-            Assert.Equal(campaign.DiscountPercentage, discountPercentage);
+            Assert.Equal(campaign.Discount, discountPercentage);
             Assert.Equal(campaign.MinimumItemCount, minimumItemCount);
             Assert.Equal(campaign.DiscountType, discountType);
         }
 
         /// <summary>
         /// Create Coupon for ShoppingCart discount
-        /// MinimumCartAmount, DiscountPercentage, DiscountType added to Coupon
+        /// MinimumCartAmount, Discount, DiscountType added to Coupon
         /// </summary>
         [Theory]
         [InlineData(100, 10, DiscountType.Rate)]
@@ -105,6 +107,29 @@ namespace ShoppingCart.UnitTests
             Assert.Equal(campaign.MinimumCartAmount, minimumCartAmount);
             Assert.Equal(campaign.DiscountPercentage, discountPercentage);
             Assert.Equal(campaign.DiscountType, discountType);
+        }
+
+        /// <summary>
+        /// Create Campaign
+        /// Campaign applicable for a category
+        /// Discount, MinimumItemCount, DiscountType added to Campaign
+        /// </summary>
+        [Theory]
+        [MemberData(nameof(TestDataGenerator.GetShoppingCartInfos), MemberType = typeof(TestDataGenerator))]
+        public void ApplyDiscount_For_Cart(List<ShoppingCartProduct> shoppingCartProducts, Campaign campaign, object[] expected)
+        {
+            // Create new Shopping Cart
+            var cart = new Models.ShoppingCart();
+            // New Item added to cart
+            foreach (var shoppingCartProduct in shoppingCartProducts)
+            {
+                cart.AddItem(shoppingCartProduct.Product, shoppingCartProduct.Quantity);
+            }
+            Assert.Equal(expected[0], cart.GetItems().First().Product.Title);
+            Assert.Equal(expected[1], cart.TotalPrice);
+
+            cart.ApplyDiscount(campaign);
+            Assert.Equal(expected[2], cart.DiscountedTotalPrice);
         }
     }
 }

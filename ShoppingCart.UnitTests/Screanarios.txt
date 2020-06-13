@@ -42,13 +42,28 @@ Scenario 7 - Campaigns are applicable to a product category.
 Scenario 8 - Campaign discount vary based on the number of products in the cart
 	DiscountPercentage, MinimumItemCount, DiscountType added to Campaign
 		Cases
-			CategoryTitle:food, DiscountPercentage:20.0 , MinimumItemCount: 3, DiscountType: Rate
-			CategoryTitle:food, DiscountPercentage:50.0 , MinimumItemCount: 5, DiscountType: Rate
-			CategoryTitle:food, DiscountPercentage:5.0 , MinimumItemCount: 5, DiscountType: Amount
+			CategoryTitle:food, Discount:20.0 , MinimumItemCount: 3, DiscountType: Rate
+			CategoryTitle:food, Discount:50.0 , MinimumItemCount: 5, DiscountType: Rate
+			CategoryTitle:food, Discount:5.0 , MinimumItemCount: 5, DiscountType: Amount
 	Check DiscountPercentage for Campaign
 	Check MinimumItemCount for Campaign
 	Check DiscountType for Campaign
 
+Scenario 8.1 - Apply Campaign discount to ShoppingCart for DiscountType Rate and Amount
+	Cases - Add Product To Cart and apply campaign discount
+		1 -	ShoppingCartProducts: { Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3}
+			Campaign: { Category: { Title: "food" }, Discount: 20, MinimumItemCount:3, DiscountType: Rate
+			Expected: { ProductName:"Apple", CartTotalPrice:300.0, CartDiscountedPrice:240.0 }
+		2 -	ShoppingCartProduct: { Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 5}
+			Campaign: { Category: { Title: "food" }, Discount: 50, MinimumItemCount:5, DiscountType: Rate
+			Expected: { ProductName:"Apple", CartTotalPrice:300.0, CartDiscountedPrice:300.0 }
+		3 -	ShoppingCartProduct: { Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 5}
+			Campaign: { Category: { Title: "food" }, Discount: 5, MinimumItemCount:5, DiscountType: Amount
+			Expected: { ProductName:"Apple", CartTotalPrice:500.0, CartDiscountedPrice:475.0 }
+		4 -	ShoppingCartProduct: [{ Product: { Title: "Mouse", Price: 400, Category: { Title: "computer" }, Quantity: 1},{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 5}]
+			Campaign: { Category: { Title: "computer" }, Discount: 15, MinimumItemCount:1, DiscountType: Amount
+			Expected: { ProductName:"Mouse", CartTotalPrice:900.0, CartDiscountedPrice:475.0 }
+	
 Scenario 9 - Coupons exist for cart discounts.
     Create Coupon for ShoppingCart discount
     MinimumCartAmount, DiscountPercentage, DiscountType added to Coupon
