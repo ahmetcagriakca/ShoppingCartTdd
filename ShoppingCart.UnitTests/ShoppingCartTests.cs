@@ -2,6 +2,7 @@ using System;
 using Xunit;
 using System.Linq;
 using ShoppingCart.UnitTests.Models;
+using ShoppingCart.UnitTests.Models.Enums;
 
 namespace ShoppingCart.UnitTests
 {
@@ -74,15 +75,21 @@ namespace ShoppingCart.UnitTests
         /// <summary>
         /// Create Campaign
         /// Campaign applicable for a category
+        /// DiscountPercentage, MinimumItemCount, DiscountType added to Campaign
         /// </summary>
         [Theory]
-        [InlineData("food")]
-        public void Create_Campaign(string categoryTitle)
+        [InlineData("food", 20.0, 3, DiscountType.Rate)]
+        [InlineData("food", 50.0, 5, DiscountType.Rate)]
+        [InlineData("food", 5.0, 5, DiscountType.Amount)]
+        public void Create_Campaign(string categoryTitle,double discountPercentage,int minimumItemCount,DiscountType discountType)
         {
             var category = new Category(categoryTitle);
-            var campaign = new Campaign(category);
+            var campaign = new Campaign(category, discountPercentage, minimumItemCount, discountType);
             Assert.NotNull(campaign);
             Assert.Equal(campaign.Category.Title, categoryTitle);
+            Assert.Equal(campaign.DiscountPercentage,discountPercentage);
+            Assert.Equal(campaign.MinimumItemCount, minimumItemCount);
+            Assert.Equal(campaign.DiscountType, discountType);
         }
     }
 }
