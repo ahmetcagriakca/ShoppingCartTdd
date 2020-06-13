@@ -1,0 +1,32 @@
+﻿Implement an e-commerce shopping cart class.
+
+Rules:
+
+Scenario 1 - Product has a title and price. 
+	Create new product with title and price
+	title:apple 
+	price:100
+	Check title for product
+	Check price for Product
+
+Scenario 2 - Product belong to a category. 
+	
+Scenario 3 - Category may or may not have a parent category. 
+	
+Scenario 4 - Category has a title. 
+	
+Scenario 5 - Products are added to the Cart with quantity info. 
+
+Scenario 6 - Campaigns exist for product price discounts.
+	
+Scenario 7 - Campaigns are applicable to a product category.
+
+Scenario 8 - Campaign discount vary based on the number of products in the cart
+
+Scenario 9 - Coupons exist for cart discounts.
+
+Scenario 10 - Coupons have minimum cart amount constraint. If Cart amount is less than minimum, discount is not applied.
+
+Scenario 11 - Delivery Cost is Dynamic. Based on the number of deliveries and number of products.
+
+Scenario 12 - Implement a class that takes a cart and calculates the delivery cost.
