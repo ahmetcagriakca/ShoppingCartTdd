@@ -51,18 +51,39 @@ Scenario 8 - Campaign discount vary based on the number of products in the cart
 
 Scenario 8.1 - Apply Campaign discount to ShoppingCart for DiscountType Rate and Amount
 	Cases - Add Product To Cart and apply campaign discount
-		1 -	ShoppingCartProducts: { Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3}
-			Campaign: { Category: { Title: "food" }, Discount: 20, MinimumItemCount:3, DiscountType: Rate
+		1 -	ShoppingCartProducts: [{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3}]
+			Campaign: { Category: { Title: "food" }, Discount: 20, MinimumItemCount:3, DiscountType: Rate}
 			Expected: { ProductName:"Apple", CartTotalPrice:300.0, CartDiscountedPrice:240.0 }
-		2 -	ShoppingCartProduct: { Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 5}
-			Campaign: { Category: { Title: "food" }, Discount: 50, MinimumItemCount:5, DiscountType: Rate
+		2 -	ShoppingCartProduct: [{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 5}]
+			Campaign: { Category: { Title: "food" }, Discount: 50, MinimumItemCount:5, DiscountType: Rate}
 			Expected: { ProductName:"Apple", CartTotalPrice:300.0, CartDiscountedPrice:300.0 }
-		3 -	ShoppingCartProduct: { Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 5}
-			Campaign: { Category: { Title: "food" }, Discount: 5, MinimumItemCount:5, DiscountType: Amount
+		3 -	ShoppingCartProduct: [{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 5}]
+			Campaign: { Category: { Title: "food" }, Discount: 5, MinimumItemCount:5, DiscountType: Amount}
 			Expected: { ProductName:"Apple", CartTotalPrice:500.0, CartDiscountedPrice:475.0 }
 		4 -	ShoppingCartProduct: [{ Product: { Title: "Mouse", Price: 400, Category: { Title: "computer" }, Quantity: 1},{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 5}]
-			Campaign: { Category: { Title: "computer" }, Discount: 15, MinimumItemCount:1, DiscountType: Amount
+			Campaign: { Category: { Title: "computer" }, Discount: 15, MinimumItemCount:1, DiscountType: Amount}
 			Expected: { ProductName:"Mouse", CartTotalPrice:900.0, CartDiscountedPrice:475.0 }
+	
+Scenario 8.2 - Apply multiple Campaign discount for ShoppingCart 
+	Cases
+		1 -	ShoppingCartProduct: [	{ Product: { Title: "Mouse", Price: 400, Category: { Title: "computer" }, Quantity: 1},
+									{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3}]
+			Campaign: [	{ Category: { Title: "food" }, Discount: 20, MinimumItemCount:3, DiscountType: Rate}, 
+						{ Category: { Title: "food" }, Discount: 10, MinimumItemCount:2, DiscountType: Amount}, 
+						{ Category: { Title: "computer" }, Discount: 15, MinimumItemCount:1, DiscountType: Rate}]
+			Expected: { CartTotalPrice:700.0, CartDiscountedPrice:550.0 }
+			//Calculation of DiscountPrice 100*3 + 400*1 -(( 300*20%)+(10*3)+(400*15)) = 550
+		2 -	ShoppingCartProduct: [	{ Product: { Title: "Mouse", Price: 400, Category: { Title: "computer" }, Quantity: 1},
+									{ Product: { Title: "Almond", Price: 150, Category: { Title: "food" }, Quantity: 2},
+									{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3},
+									{ Product: { Title: "Banana", Price: 200, Category: { Title: "food" }, Quantity: 5},
+									]
+			Campaign: [	{ Category: { Title: "food" }, Discount: 50, MinimumItemCount:5, DiscountType: Rate}, 
+						{ Category: { Title: "food" }, Discount: 20, MinimumItemCount:3, DiscountType: Rate}, 
+						{ Category: { Title: "food" }, Discount: 10, MinimumItemCount:2, DiscountType: Amount}, 
+						{ Category: { Title: "computer" }, Discount: 15, MinimumItemCount:1, DiscountType: Rate}]
+			Expected: { CartTotalPrice:2000.0, CartDiscountedPrice:1180.0 }
+			//Calculation of DiscountPrice = 100*3 + 150*2 + 400*1 + 200*5  -( (1000*50%)+(300*20%)+(500*20%)+(10*2)+(10*3)+(10*5)+(400*15)) = 1180
 	
 Scenario 9 - Coupons exist for cart discounts.
     Create Coupon for ShoppingCart discount

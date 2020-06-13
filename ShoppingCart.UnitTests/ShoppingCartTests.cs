@@ -110,9 +110,7 @@ namespace ShoppingCart.UnitTests
         }
 
         /// <summary>
-        /// Create Campaign
-        /// Campaign applicable for a category
-        /// Discount, MinimumItemCount, DiscountType added to Campaign
+        /// Apply Discount for added cart products
         /// </summary>
         [Theory]
         [MemberData(nameof(TestDataGenerator.GetShoppingCartInfos), MemberType = typeof(TestDataGenerator))]
@@ -130,6 +128,26 @@ namespace ShoppingCart.UnitTests
 
             cart.ApplyDiscount(campaign);
             Assert.Equal(expected[2], cart.DiscountedTotalPrice);
+        }
+
+        /// <summary>
+        /// Apply Discount for added cart products
+        /// </summary>
+        [Theory]
+        [MemberData(nameof(TestDataGenerator.GetShoppingCartMultipleCampaignsInfos), MemberType = typeof(TestDataGenerator))]
+        public void Apply_Multiple_Campigns_Discount_For_Cart(List<ShoppingCartProduct> shoppingCartProducts, List<Campaign> campaigns, object[] expected)
+        {
+            // Create new Shopping Cart
+            var cart = new Models.ShoppingCart();
+            // New Item added to cart
+            foreach (var shoppingCartProduct in shoppingCartProducts)
+            {
+                cart.AddItem(shoppingCartProduct.Product, shoppingCartProduct.Quantity);
+            }
+            Assert.Equal(expected[0], cart.TotalPrice);
+
+            cart.ApplyDiscount(campaigns.ToArray());
+            Assert.Equal(expected[1], cart.DiscountedTotalPrice);
         }
     }
 }

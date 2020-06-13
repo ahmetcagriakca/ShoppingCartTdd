@@ -46,5 +46,52 @@ namespace ShoppingCart.UnitTests
                 new object[] { "Mouse", 900.0, 840.0}
             };
         }
+        /// <summary>
+        /// Genereating Data for Shopping Cart Multiple Campaign
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<object[]> GetShoppingCartMultipleCampaignsInfos()
+        {
+            yield return new object[]
+            {
+                new List<ShoppingCartProduct>{
+                    new ShoppingCartProduct( new Product ("Mouse",400,new Category("computer")),1),
+                    new ShoppingCartProduct( new Product ("Apple",100,new Category("food")),3),
+                },
+                new List<Campaign>
+                {
+                    new Campaign( new Category("food"),20.0, 3, DiscountType.Rate),
+                    new Campaign( new Category("food"),10.0, 2, DiscountType.Amount),
+                    new Campaign( new Category("computer"),15.0, 1, DiscountType.Rate),
+                },
+                new object[] { 
+                    700.0,//TotalPrice
+                    550.0,//DiscountedPrice
+                }
+                //100*3 + 400*1 -(( 300*20%)+(10*3)+(400*15)) = 550
+            };
+            yield return new object[]
+            {
+                new List<ShoppingCartProduct>{
+                    new ShoppingCartProduct( new Product ("Mouse",400,new Category("computer")),1),
+                    new ShoppingCartProduct( new Product ("Almond",150,new Category("food")),2),
+                    new ShoppingCartProduct( new Product ("Apple",100,new Category("food")),3),
+                    new ShoppingCartProduct( new Product ("Banana",200,new Category("food")),5),
+                },
+                new List<Campaign>
+                {
+                    new Campaign( new Category("food"),50.0, 5, DiscountType.Rate),
+                    new Campaign( new Category("food"),20.0, 3, DiscountType.Rate),
+                    new Campaign( new Category("food"),10.0, 2, DiscountType.Amount),
+                    new Campaign( new Category("computer"),15.0, 1, DiscountType.Rate),
+                },
+                new object[]
+                {
+                    2000.0,//TotalPrice
+                    1180.0,//DiscountedPrice
+                }
+                //100*3 + 150*2 + 400*1 + 200*5  -( (1000*50%)+(300*20%)+(500*20%)+(10*2)+(10*3)+(10*5)+(400*15))=
+            };
+        }
     }
 }

@@ -27,24 +27,29 @@ namespace ShoppingCart.UnitTests.Models
 
         public int ItemCount() => Products.Count;
 
-        public void ApplyDiscount(Campaign campaign)
+        public void ApplyDiscount(params Campaign[] campaigns)
         {
-            var campaignProducts = Products.Where(en => en.Product.Category.Title == campaign.Category.Title).ToList();
-            //Apply discount on items if category item count bigger than campaign minimum item count
-            if (campaignProducts.Sum(en => en.Quantity) < campaign.MinimumItemCount) return;
-
-            foreach (var product in campaignProducts)
+            foreach (var campaign in campaigns)
             {
-                switch (campaign.DiscountType)
-                {
-                    case DiscountType.Rate:
-                        product.DiscountedPrice = product.TotalPrice - product.TotalPrice * campaign.Discount / 100;
-                        break;
-                    case DiscountType.Amount:
-                        product.DiscountedPrice = product.TotalPrice - campaign.Discount * product.Quantity;
-                        break;
-                }
 
+                var campaignProducts = Products.Where(en => en.Product.Category.Title == campaign.Category.Title).ToList();
+                //Apply discount on items if category item count bigger than campaign minimum item count
+                //if (campaignProducts.Sum(en => en.Quantity) < campaign.MinimumItemCount) return;
+
+                foreach (var product in campaignProducts)
+                {
+                    if(product.Quantity < campaign.MinimumItemCount) continue;
+                    switch (campaign.DiscountType)
+                    {
+                        case DiscountType.Rate:
+                            product.DiscountedPrice = product.DiscountedPrice - product.DiscountedPrice * campaign.Discount / 100;
+                            break;
+                        case DiscountType.Amount:
+                            product.DiscountedPrice = product.DiscountedPrice - campaign.Discount * product.Quantity;
+                            break;
+                    }
+
+                }
             }
         }
     }
