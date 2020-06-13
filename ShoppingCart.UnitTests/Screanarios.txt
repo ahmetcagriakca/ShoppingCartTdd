@@ -7,10 +7,12 @@ Scenario 1 - Product has a title and price.
 	title:apple 
 	price:100
 	Check title for product
-	Check price for Product
+	Check price for product
+	Check category for product
 
 Scenario 2 - Product belong to a category. 
-	
+	Check Category class
+
 Scenario 3 - Category may or may not have a parent category. 
 	
 Scenario 4 - Category has a title. 
