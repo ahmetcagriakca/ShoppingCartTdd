@@ -35,6 +35,9 @@ Scenario 6 - Campaigns exist for product price discounts.
 	Check Campaign class
 	
 Scenario 7 - Campaigns are applicable to a product category.
+	Campaign initialize with category
+		categoryTitle:food
+	Check category title for campaign
 
 Scenario 8 - Campaign discount vary based on the number of products in the cart
 

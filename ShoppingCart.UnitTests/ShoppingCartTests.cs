@@ -73,12 +73,16 @@ namespace ShoppingCart.UnitTests
 
         /// <summary>
         /// Create Campaign
+        /// Campaign applicable for a category
         /// </summary>
-        [Fact]
-        public void Create_Campaign()
+        [Theory]
+        [InlineData("food")]
+        public void Create_Campaign(string categoryTitle)
         {
-            var campaign = new Campaign();
+            var category = new Category(categoryTitle);
+            var campaign = new Campaign(category);
             Assert.NotNull(campaign);
+            Assert.Equal(campaign.Category.Title, categoryTitle);
         }
     }
 }
