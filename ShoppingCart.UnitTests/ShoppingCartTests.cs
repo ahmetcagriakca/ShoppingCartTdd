@@ -31,5 +31,16 @@ namespace ShoppingCart.UnitTests
             var category = new Category();
             Assert.NotNull(category);
         }
+
+        /// <summary>
+        /// Create Category with parent category
+        /// </summary>
+        [Fact]
+        public void Create_CategoryWithParent()
+        {
+            var parentCategory = new Category();
+            var category = new Category(parentCategory);
+            Assert.Equal(category.ParentCategory, parentCategory);
+        }
     }
 }
