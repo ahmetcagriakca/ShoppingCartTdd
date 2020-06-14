@@ -123,9 +123,9 @@ Scenario 10 - Coupons have minimum cart amount constraint. If Cart amount is les
 			Campaign: [	{ Category: { Title: "food" }, Discount: 20, MinimumItemCount:3, DiscountType: Rate}, 
 						{ Category: { Title: "food" }, Discount: 10, MinimumItemCount:2, DiscountType: Amount}, 
 						{ Category: { Title: "computer" }, Discount: 15, MinimumItemCount:1, DiscountType: Rate}]
-			Coupon: { CartTotalPrice:700.0, CartDiscountedPrice:550.0, CouponDiscountedPrice:550.0 }
-			Expected: { MinimumCartAmount:1500.0, Discount:10.0, DiscountType: Rate}
-			//Calculation of DiscountPrice 100*3 + 400*1 -(( 300*20%)+(10*3)+(400*15)) = 550
+			Coupon: { MinimumCartAmount:1500.0, Discount:10.0, DiscountType: Rate}
+			Expected: { CartTotalPrice:700.0, CartDiscountedPrice:550.0, CouponDiscountedPrice:550.0 }
+			//Calculation of Campaign DiscountPrice 100*3 + 400*1 -(( 300*20%)+(10*3)+(400*15)) = 550
 			//Coupon Discount not applied for this cart
 
 		2 -	ShoppingCartProduct: [	{ Product: { Title: "Mouse", Price: 400, Category: { Title: "computer" }, Quantity: 1},
@@ -137,8 +137,9 @@ Scenario 10 - Coupons have minimum cart amount constraint. If Cart amount is les
 						{ Category: { Title: "food" }, Discount: 20, MinimumItemCount:3, DiscountType: Rate}, 
 						{ Category: { Title: "food" }, Discount: 10, MinimumItemCount:2, DiscountType: Amount}, 
 						{ Category: { Title: "computer" }, Discount: 15, MinimumItemCount:1, DiscountType: Rate}]
+			Coupon: { MinimumCartAmount:1000.0, Discount:150.0, DiscountType: Amount}
 			Expected: { CartTotalPrice:2000.0, CartDiscountedPrice:1180.0, CouponDiscountedPrice:1030.0 }
-			//Calculation of DiscountPrice = 100*3 + 150*2 + 400*1 + 200*5  -( (1000*50%)+(300*20%)+(500*20%)+(10*2)+(10*3)+(10*5)+(400*15)) = 1180
+			//Calculation of Campaign DiscountPrice = 100*3 + 150*2 + 400*1 + 200*5  -( (1000*50%)+(300*20%)+(500*20%)+(10*2)+(10*3)+(10*5)+(400*15)) = 1180
 			//Coupon Discount = 1180-150 = 1030
 			
 		3 -	ShoppingCartProduct: [	{ Product: { Title: "Keyboard", Price: 600, Category: { Title: "computer" }, Quantity: 3},
@@ -152,8 +153,9 @@ Scenario 10 - Coupons have minimum cart amount constraint. If Cart amount is les
 						{ Category: { Title: "computer" }, Discount: 30, MinimumItemCount:1, DiscountType: Amount},
 						{ Category: { Title: "food" }, Discount: 50, MinimumItemCount:5, DiscountType: Rate}, 
 						]
+			Coupon: { MinimumCartAmount:1500.0, Discount:10.0, DiscountType: Rate}
 			Expected: { CartTotalPrice:2000.0, CartDiscountedPrice:3030.0, CouponDiscountedPrice:2727.0.0 }
-			//Calculation of DiscountPrice 
+			//Calculation of Campaign DiscountPrice 
             //              Campaign 1  Campaign 2  Campaign 3   
             //Iteration 1   3650        3680        3300         campaign 3 applied
             //Iteration 2   3150        3180        X            campaign 1 applied
@@ -165,10 +167,14 @@ Scenario 11 - Delivery Cost is Dynamic. Based on the number of deliveries and nu
 
 Scenario 12 - Implement a class that takes a cart and calculates the delivery cost.
 
+        public double CostPerDelivery { get; }
+        public double CostPerProduct { get; }
+        public double FixedCost { get; }
 
 	Cases
 		1 -	ShoppingCartProduct: [	{ Product: { Title: "Mouse", Price: 400, Category: { Title: "computer" }, Quantity: 1},
 									{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3}]
+            DeliveryCostCalculator: { CostPerDelivery: 5.0, CostPerProduct: 1.0, FixedCost: 2.99 }
 			Expected: { DeliveryCost:14.99}
             // Delivery Cost = 5*2+1*2+2.99
 
@@ -176,6 +182,7 @@ Scenario 12 - Implement a class that takes a cart and calculates the delivery co
 									{ Product: { Title: "Almond", Price: 150, Category: { Title: "food" }, Quantity: 2},
 									{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3},
 									{ Product: { Title: "Banana", Price: 200, Category: { Title: "food" }, Quantity: 5},]
+            DeliveryCostCalculator: { CostPerDelivery: 5.0, CostPerProduct: 1.0, FixedCost: 2.99 }
 			Expected: { DeliveryCost:15.99}
             // Delivery Cost = 5*2+1*4+2.99
 			
@@ -185,5 +192,70 @@ Scenario 12 - Implement a class that takes a cart and calculates the delivery co
 									{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3},
 									{ Product: { Title: "Banana", Price: 200, Category: { Title: "food" }, Quantity: 5},
 									]
+            DeliveryCostCalculator: { CostPerDelivery: 5.0, CostPerProduct: 1.0, FixedCost: 2.99 }
 			Expected: { DeliveryCost:17.99}
             // Delivery Cost = 5*2+1*5+2.99
+
+Scenario 13- Print Shopping Cart
+
+	Cases
+		1 -	ShoppingCartProduct: [	{ Product: { Title: "Mouse", Price: 400, Category: { Title: "computer" }, Quantity: 1},
+									{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3}]
+			Campaign: [	{ Category: { Title: "food" }, Discount: 20, MinimumItemCount:3, DiscountType: Rate}, 
+						{ Category: { Title: "food" }, Discount: 10, MinimumItemCount:2, DiscountType: Amount}, 
+						{ Category: { Title: "computer" }, Discount: 15, MinimumItemCount:1, DiscountType: Rate}]
+			Coupon: { MinimumCartAmount:1500.0, Discount:10.0, DiscountType: Rate}
+            DeliveryCostCalculator: { CostPerDelivery: 5.0, CostPerProduct: 1.0, FixedCost: 2.99 }
+			Expected: { PrintedText:
+"CategoryName        ProductName         Quantity            Unit Price          Total Price              Total Discount(coupon,campaign)applied  
+computer            Mouse               1                   400                 400                      340                                     
+food                Apple               3                   100                 300                      210                                     
+Total Amount:550
+Delivery Cost:14.99
+"}
+		2 -	ShoppingCartProduct: [	{ Product: { Title: "Mouse", Price: 400, Category: { Title: "computer" }, Quantity: 1},
+									{ Product: { Title: "Almond", Price: 150, Category: { Title: "food" }, Quantity: 2},
+									{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3},
+									{ Product: { Title: "Banana", Price: 200, Category: { Title: "food" }, Quantity: 5},
+									]
+			Campaign: [	{ Category: { Title: "food" }, Discount: 50, MinimumItemCount:5, DiscountType: Rate}, 
+						{ Category: { Title: "food" }, Discount: 20, MinimumItemCount:3, DiscountType: Rate}, 
+						{ Category: { Title: "food" }, Discount: 10, MinimumItemCount:2, DiscountType: Amount}, 
+						{ Category: { Title: "computer" }, Discount: 15, MinimumItemCount:1, DiscountType: Rate}]
+			Coupon: { MinimumCartAmount:1000.0, Discount:150.0, DiscountType: Amount}
+            DeliveryCostCalculator: { CostPerDelivery: 5.0, CostPerProduct: 1.0, FixedCost: 2.99 }
+			Expected: { PrintedText:
+"CategoryName        ProductName         Quantity            Unit Price          Total Price              Total Discount(coupon,campaign)applied  
+computer            Mouse               1                   400                 400                      340                                     
+food                Almond              2                   150                 300                      280                                     
+food                Apple               3                   100                 300                      210                                     
+food                Banana              5                   200                 1000                     350                                     
+Total Amount:1030
+Delivery Cost:16.99
+"
+			}
+			
+		3 -	ShoppingCartProduct: [	{ Product: { Title: "Keyboard", Price: 600, Category: { Title: "computer" }, Quantity: 3},
+									{ Product: { Title: "Mouse", Price: 400, Category: { Title: "computer" }, Quantity: 1},
+									{ Product: { Title: "Almond", Price: 150, Category: { Title: "food" }, Quantity: 2},
+									{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3},
+									{ Product: { Title: "Banana", Price: 200, Category: { Title: "food" }, Quantity: 5},
+									]
+			Campaign: [	 
+						{ Category: { Title: "food" }, Discount: 15, MinimumItemCount:2, DiscountType: Amount}, 
+						{ Category: { Title: "computer" }, Discount: 30, MinimumItemCount:1, DiscountType: Amount},
+						{ Category: { Title: "food" }, Discount: 50, MinimumItemCount:5, DiscountType: Rate}, 
+						]
+			Coupon: { MinimumCartAmount:1500.0, Discount:10.0, DiscountType: Rate}
+            DeliveryCostCalculator: { CostPerDelivery: 5.0, CostPerProduct: 1.0, FixedCost: 2.99 }
+			Expected: { PrintedText:
+"CategoryName        ProductName         Quantity            Unit Price          Total Price              Total Discount(coupon,campaign)applied  
+computer            Keyboard            3                   600                 1800                     1710                                    
+computer            Mouse               1                   400                 400                      370                                     
+food                Almond              2                   150                 300                      270                                     
+food                Apple               3                   100                 300                      255                                     
+food                Banana              5                   200                 1000                     425                                     
+Total Amount:2727
+Delivery Cost:17.99
+"
+			}

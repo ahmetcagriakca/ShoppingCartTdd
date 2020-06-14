@@ -167,6 +167,7 @@ namespace ShoppingCart.UnitTests
                 new Campaign( new Category("food"),10.0, 2, DiscountType.Amount),
                 new Campaign( new Category("computer"),15.0, 1, DiscountType.Rate),
             },
+            new Coupon(1500,10,DiscountType.Rate),
             new Coupon(1000,150,DiscountType.Amount),
             new object[]
             {
@@ -256,6 +257,97 @@ namespace ShoppingCart.UnitTests
                 17.99,//Delivery Cost
             }
             // Delivery Cost = 5*2+1*5+2.99
+            };
+        }
+
+        /// <summary>
+        /// Genereating Data for Shopping Cart Multiple Campaign and coupon
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<object[]> GetShoppingCartPrintTestValues()
+        {
+            yield return new object[]
+            {
+            new List<ShoppingCartProduct>{
+                new ShoppingCartProduct( new Product ("Mouse",400,new Category("computer")),1),
+                new ShoppingCartProduct( new Product ("Apple",100,new Category("food")),3),
+            },
+            new List<Campaign>
+            {
+                new Campaign( new Category("food"),20.0, 3, DiscountType.Rate),
+                new Campaign( new Category("food"),10.0, 2, DiscountType.Amount),
+                new Campaign( new Category("computer"),15.0, 1, DiscountType.Rate),
+            },
+            new Coupon(1500,10,DiscountType.Rate),
+            new DeliveryCostCalculator(5.0,1.0,2.99),
+            new object[]
+            {
+@"CategoryName        ProductName         Quantity            Unit Price          Total Price              Total Discount(coupon,campaign)applied  
+computer            Mouse               1                   400                 400                      340                                     
+food                Apple               3                   100                 300                      210                                     
+Total Amount:550
+Delivery Cost:14.99
+"
+            }
+            };
+            yield return new object[]
+            {
+            new List<ShoppingCartProduct>{
+                new ShoppingCartProduct( new Product ("Mouse",400,new Category("computer")),1),
+                new ShoppingCartProduct( new Product ("Almond",150,new Category("food")),2),
+                new ShoppingCartProduct( new Product ("Apple",100,new Category("food")),3),
+                new ShoppingCartProduct( new Product ("Banana",200,new Category("food")),5),
+            },
+            new List<Campaign>
+            {
+                new Campaign( new Category("food"),50.0, 5, DiscountType.Rate),
+                new Campaign( new Category("food"),20.0, 3, DiscountType.Rate),
+                new Campaign( new Category("food"),10.0, 2, DiscountType.Amount),
+                new Campaign( new Category("computer"),15.0, 1, DiscountType.Rate),
+            },
+            new Coupon(1000,150,DiscountType.Amount),
+            new DeliveryCostCalculator(5.0,1.0,2.99),
+            new object[]
+            {
+@"CategoryName        ProductName         Quantity            Unit Price          Total Price              Total Discount(coupon,campaign)applied  
+computer            Mouse               1                   400                 400                      340                                     
+food                Almond              2                   150                 300                      280                                     
+food                Apple               3                   100                 300                      210                                     
+food                Banana              5                   200                 1000                     350                                     
+Total Amount:1030
+Delivery Cost:16.99
+"
+            }
+            };
+            yield return new object[]
+            {
+            new List<ShoppingCartProduct>{
+                new ShoppingCartProduct( new Product ("Keyboard",600,new Category("computer")),3),
+                new ShoppingCartProduct( new Product ("Mouse",400,new Category("computer")),1),
+                new ShoppingCartProduct( new Product ("Almond",150,new Category("food")),2),
+                new ShoppingCartProduct( new Product ("Apple",100,new Category("food")),3),
+                new ShoppingCartProduct( new Product ("Banana",200,new Category("food")),5),
+            },
+            new List<Campaign>
+            {
+                new Campaign( new Category("food"),15.0, 2, DiscountType.Amount),
+                new Campaign( new Category("computer"),30, 1, DiscountType.Amount),
+                new Campaign( new Category("food"),50.0, 5, DiscountType.Rate),
+            },
+            new Coupon(1500,10,DiscountType.Rate),
+            new DeliveryCostCalculator(5.0,1.0,2.99),
+            new object[]
+            {
+@"CategoryName        ProductName         Quantity            Unit Price          Total Price              Total Discount(coupon,campaign)applied  
+computer            Keyboard            3                   600                 1800                     1710                                    
+computer            Mouse               1                   400                 400                      370                                     
+food                Almond              2                   150                 300                      270                                     
+food                Apple               3                   100                 300                      255                                     
+food                Banana              5                   200                 1000                     425                                     
+Total Amount:2727
+Delivery Cost:17.99
+"
+            }
             };
         }
     }

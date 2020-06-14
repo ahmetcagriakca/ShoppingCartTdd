@@ -222,5 +222,33 @@ namespace ShoppingCart.UnitTests
             var deliveryCost = cart.GetDeliveryCost();
             Assert.Equal(expected[0], deliveryCost);
         }
+
+
+
+        /// <summary>
+        /// Apply Multiple Campaign Discount for cart
+        /// Maximum Discount Iterator implemented
+        /// </summary>
+        /// <param name="shoppingCartProducts"></param>
+        /// <param name="campaigns"></param>
+        /// <param name="coupon"></param>
+        /// <param name="deliveryCostCalculator"></param>
+        [Theory]
+        [MemberData(nameof(TestDataGenerator.GetShoppingCartPrintTestValues), MemberType = typeof(TestDataGenerator))]
+        public void CheckPrintedValues(IEnumerable<ShoppingCartProduct> shoppingCartProducts, List<Campaign> campaigns, Coupon coupon, DeliveryCostCalculator deliveryCostCalculator, object[] expected)
+        {
+            // Create new Shopping Cart
+            var cart = new Models.ShoppingCart(new MaxDiscountIterator(), deliveryCostCalculator);
+            // Products added to cart
+            foreach (var shoppingCartProduct in shoppingCartProducts)
+            {
+                cart.AddItem(shoppingCartProduct.Product, shoppingCartProduct.Quantity);
+            }
+            cart.ApplyDiscounts(campaigns.ToArray());
+            cart.ApplyCoupon(coupon);
+            var printText=cart.Print();
+            Assert.Equal(expected[0], printText);
+
+        }
     }
 }

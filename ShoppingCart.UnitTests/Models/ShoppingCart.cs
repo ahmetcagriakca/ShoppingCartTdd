@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using ShoppingCart.UnitTests.Domain.DeliveryManagement.Calculators;
 using ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Calculators;
 using ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Iterations;
@@ -145,6 +147,35 @@ namespace ShoppingCart.UnitTests.Models
         /// calculating delivery cost and return 
         /// </summary>
         public double GetDeliveryCost() => DeliveryCost;
-    }
 
+        public string Print()
+        {
+            var productGroup = Products.GroupBy(en => en.Product.Category.Title).OrderBy(en => en.Key);
+            var stringBuilder = new StringBuilder();
+            var categoryName = "CategoryName";
+            var productName = "ProductName";
+            var quantity = "Quantity";
+            var unitPrice = "Unit Price";
+            var totalPrice = "Total Price";
+            var totalDiscount = "Total Discount(coupon,campaign)applied";
+            stringBuilder.AppendLine($"{categoryName,-20}{productName,-20}{quantity,-20}{unitPrice,-20}{totalPrice,-25}{totalDiscount,-40}");
+            foreach (var group in productGroup)
+            {
+                var products = Products.Where(en => en.Product.Category.Title == group.Key)
+                    .OrderBy(en => en.Product.Title);
+
+                foreach (var product in products)
+                {
+
+                    stringBuilder.AppendLine($"{group.Key,-20}{product.Product.Title,-20}{product.Quantity,-20}{product.Product.Price,-20}{product.TotalPrice,-25}{product.DiscountedPrice,-40}");
+                }
+
+
+            }
+
+            stringBuilder.AppendLine($@"Total Amount:{this.CartDiscountedPrice}");
+            stringBuilder.AppendLine($@"Delivery Cost:{this.DeliveryCost}");
+            return stringBuilder.ToString();
+        }
+    }
 }
