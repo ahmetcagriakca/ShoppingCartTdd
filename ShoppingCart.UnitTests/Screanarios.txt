@@ -1,6 +1,4 @@
-﻿Implement an e-commerce shopping cart class.
-
-Rules:
+﻿Rules:
 
 Scenario 1 - Product has a title and price. 
 	Create new product with title and price
@@ -53,16 +51,16 @@ Scenario 8.1 - Apply Campaign discount to ShoppingCart for DiscountType Rate and
 	Cases - Add Product To Cart and apply campaign discount
 		1 -	ShoppingCartProducts: [{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3}]
 			Campaign: { Category: { Title: "food" }, Discount: 20, MinimumItemCount:3, DiscountType: Rate}
-			Expected: { ProductName:"Apple", CartTotalPrice:300.0, CartDiscountedPrice:240.0 }
+			Expected: { ProductName:"Apple", CartTotalPrice:300.0, CartDiscountedPrice:240.0, CampaignTotalDiscounts:60.0 }
 		2 -	ShoppingCartProduct: [{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 5}]
 			Campaign: { Category: { Title: "food" }, Discount: 50, MinimumItemCount:5, DiscountType: Rate}
-			Expected: { ProductName:"Apple", CartTotalPrice:300.0, CartDiscountedPrice:300.0 }
+			Expected: { ProductName:"Apple", CartTotalPrice:300.0, CartDiscountedPrice:300.0, CampaignTotalDiscounts:0.0 }
 		3 -	ShoppingCartProduct: [{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 5}]
 			Campaign: { Category: { Title: "food" }, Discount: 5, MinimumItemCount:5, DiscountType: Amount}
-			Expected: { ProductName:"Apple", CartTotalPrice:500.0, CartDiscountedPrice:475.0 }
+			Expected: { ProductName:"Apple", CartTotalPrice:500.0, CartDiscountedPrice:475.0, CampaignTotalDiscounts:25.0 }
 		4 -	ShoppingCartProduct: [{ Product: { Title: "Mouse", Price: 400, Category: { Title: "computer" }, Quantity: 1},{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 5}]
 			Campaign: { Category: { Title: "computer" }, Discount: 15, MinimumItemCount:1, DiscountType: Amount}
-			Expected: { ProductName:"Mouse", CartTotalPrice:900.0, CartDiscountedPrice:475.0 }
+			Expected: { ProductName:"Mouse", CartTotalPrice:900.0, CartDiscountedPrice:840.0, CampaignTotalDiscounts:60.0 }
 	
 Scenario 8.2 - Apply multiple Campaign discount for ShoppingCart 
 	Cases
@@ -210,7 +208,10 @@ Scenario 13- Print Shopping Cart
 "CategoryName        ProductName         Quantity            Unit Price          Total Price              Total Discount(coupon,campaign)applied  
 computer            Mouse               1                   400                 400                      340                                     
 food                Apple               3                   100                 300                      210                                     
-Total Amount:550
+Total Amount:700
+Campaign Discount:150
+Coupon Discount:0
+Total Amount After Discounts:550
 Delivery Cost:14.99
 "}
 		2 -	ShoppingCartProduct: [	{ Product: { Title: "Mouse", Price: 400, Category: { Title: "computer" }, Quantity: 1},
@@ -230,7 +231,10 @@ computer            Mouse               1                   400                 
 food                Almond              2                   150                 300                      280                                     
 food                Apple               3                   100                 300                      210                                     
 food                Banana              5                   200                 1000                     350                                     
-Total Amount:1030
+Total Amount:2000
+Campaign Discount:820
+Coupon Discount:150
+Total Amount After Discounts:1030
 Delivery Cost:16.99
 "
 			}
@@ -255,7 +259,10 @@ computer            Mouse               1                   400                 
 food                Almond              2                   150                 300                      270                                     
 food                Apple               3                   100                 300                      255                                     
 food                Banana              5                   200                 1000                     425                                     
-Total Amount:2727
+Total Amount:3800
+Campaign Discount:770
+Coupon Discount:303
+Total Amount After Discounts:2727
 Delivery Cost:17.99
 "
 			}

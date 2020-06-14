@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ShoppingCart.UnitTests.Domain.DeliveryManagement.Calculators;
-using ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Iterations;
+using ShoppingCart.Domain.DeliveryManagement.Calculators;
+using ShoppingCart.Domain.ShoppingCartManagement.Iterations;
 
-namespace ShoppingCart.UnitTests.Models
+namespace ShoppingCart.Domain.Models
 {
     public class ShoppingCart
     {
@@ -30,7 +30,7 @@ namespace ShoppingCart.UnitTests.Models
         /// <summary>
         ///  Shopping Cart Products Expected Discounted Total Price
         /// </summary>
-        public double ProductsExpectedDiscountedTotalPrice => Products.Sum(product => product.ExpectedDiscountedPrice);
+        public double ProductsExpectedDiscountedTotalPrice => Products.Sum(product => product.ExpectedDiscountedTotalPrice);
 
         /// <summary>
         /// Number Of Deliveries is calculated by the number of distinct categories in the cart.
@@ -47,6 +47,10 @@ namespace ShoppingCart.UnitTests.Models
         /// Get Delivery Cost
         /// </summary>
         private double DeliveryCost => _deliveryCostCalculator?.CalculateFor(this) ?? 0;
+
+
+        public double AppliedCouponDiscount { get; set; }
+
         #endregion Properties
 
         #region Constractor
@@ -106,7 +110,7 @@ namespace ShoppingCart.UnitTests.Models
         }
 
         /// <summary>
-        /// Clear Product expected values in cart
+        /// Apply Product expected values in cart
         /// </summary>
         public void ApplyExpectedDiscounts()
         {
@@ -137,7 +141,9 @@ namespace ShoppingCart.UnitTests.Models
         /// <param name="coupon"></param>
         public void ApplyCoupon(Coupon coupon)
         {
-            CartDiscountedPrice = coupon.CalculateDiscountForCart(ProductsDiscountedTotalPrice);
+            var couponDiscount = coupon.CalculateDiscountForCart(ProductsDiscountedTotalPrice);
+            AppliedCouponDiscount = CartDiscountedPrice - couponDiscount;
+            CartDiscountedPrice = couponDiscount;
         }
 
 
@@ -167,13 +173,18 @@ namespace ShoppingCart.UnitTests.Models
 
                     stringBuilder.AppendLine($"{group.Key,-20}{product.Product.Title,-20}{product.Quantity,-20}{product.Product.Price,-20}{product.TotalPrice,-25}{product.DiscountedPrice,-40}");
                 }
-
-
             }
 
-            stringBuilder.AppendLine($@"Total Amount:{this.CartDiscountedPrice}");
+            stringBuilder.AppendLine($@"Total Amount:{this.CartTotalPrice}");
+            stringBuilder.AppendLine($@"Campaign Discount:{this.GetCampaignDiscount()}");
+            stringBuilder.AppendLine($@"Coupon Discount:{this.GetCouponDiscount()}");
+            stringBuilder.AppendLine($@"Total Amount After Discounts:{this.GetTotalAmountAfterDiscounts()}");
             stringBuilder.AppendLine($@"Delivery Cost:{this.DeliveryCost}");
             return stringBuilder.ToString();
         }
+
+        public double GetTotalAmountAfterDiscounts() => CartDiscountedPrice;
+        public double GetCouponDiscount() => AppliedCouponDiscount;
+        public double GetCampaignDiscount() => Products.Sum(en => en.CampaignsTotalDiscount);
     }
 }

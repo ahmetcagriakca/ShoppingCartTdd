@@ -1,6 +1,6 @@
-﻿using ShoppingCart.UnitTests.Models;
+﻿using ShoppingCart.Domain.Models;
 
-namespace ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Calculators
+namespace ShoppingCart.Domain.ShoppingCartManagement.Calculators
 {
     public interface ICouponDiscountCalculator
     {

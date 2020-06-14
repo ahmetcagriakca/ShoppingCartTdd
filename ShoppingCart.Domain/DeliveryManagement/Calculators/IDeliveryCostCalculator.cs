@@ -1,4 +1,4 @@
-﻿namespace ShoppingCart.UnitTests.Domain.DeliveryManagement.Calculators
+﻿namespace ShoppingCart.Domain.DeliveryManagement.Calculators
 {
     public interface IDeliveryCostCalculator
     {

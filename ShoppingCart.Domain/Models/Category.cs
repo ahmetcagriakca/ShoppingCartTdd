@@ -1,4 +1,4 @@
-namespace ShoppingCart.UnitTests.Models
+namespace ShoppingCart.Domain.Models
 {
     public class Category
     {

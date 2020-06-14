@@ -1,7 +1,7 @@
-using ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Calculators;
-using ShoppingCart.UnitTests.Models.Enums;
+using ShoppingCart.Domain.Models.Enums;
+using ShoppingCart.Domain.ShoppingCartManagement.Calculators;
 
-namespace ShoppingCart.UnitTests.Models
+namespace ShoppingCart.Domain.Models
 {
     public class Coupon
     {

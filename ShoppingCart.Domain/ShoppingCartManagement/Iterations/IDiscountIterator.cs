@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using ShoppingCart.UnitTests.Models;
+using ShoppingCart.Domain.Models;
 
-namespace ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Iterations
+namespace ShoppingCart.Domain.ShoppingCartManagement.Iterations
 {
     public interface IDiscountIterator
     {

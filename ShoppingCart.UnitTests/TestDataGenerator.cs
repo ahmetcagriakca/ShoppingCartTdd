@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using ShoppingCart.UnitTests.Domain.DeliveryManagement.Calculators;
-using ShoppingCart.UnitTests.Models;
-using ShoppingCart.UnitTests.Models.Enums;
+using ShoppingCart.Domain.DeliveryManagement.Calculators;
+using ShoppingCart.Domain.Models;
+using ShoppingCart.Domain.Models.Enums;
 
 namespace ShoppingCart.UnitTests
 {
@@ -19,7 +19,7 @@ namespace ShoppingCart.UnitTests
                     new ShoppingCartProduct( new Product ("Apple",100,new Category("food")),3),
                 },
                 new Campaign( new Category("food"),20.0, 3, DiscountType.Rate),
-                new object[] { "Apple", 300.0, 240.0}
+                new object[] { "Apple", 300.0, 240.0, 60.0}
             };
             yield return new object[]
             {
@@ -27,7 +27,7 @@ namespace ShoppingCart.UnitTests
                     new ShoppingCartProduct( new Product ("Apple",100,new Category("food")),3),
                 },
                 new Campaign( new Category("food"),5.0, 5, DiscountType.Rate),
-                new object[] { "Apple", 300.0, 300.0}
+                new object[] { "Apple", 300.0, 300.0, 0.0 }
             };
             yield return new object[]
             {
@@ -35,7 +35,7 @@ namespace ShoppingCart.UnitTests
                     new ShoppingCartProduct( new Product ("Apple",100,new Category("food")),5),
                 },
                 new Campaign( new Category("food"),5.0, 5, DiscountType.Amount),
-                new object[] { "Apple", 500.0, 475.0}
+                new object[] { "Apple", 500.0, 475.0, 25.0 }
             };
             yield return new object[]
             {
@@ -44,7 +44,7 @@ namespace ShoppingCart.UnitTests
                     new ShoppingCartProduct( new Product ("Apple",100,new Category("food")),5),
                 },
                 new Campaign( new Category("computer"),15.0, 1, DiscountType.Rate),
-                new object[] { "Mouse", 900.0, 840.0}
+                new object[] { "Mouse", 900.0, 840.0, 60.0 }
             };
         }
 
@@ -71,6 +71,7 @@ namespace ShoppingCart.UnitTests
                 {
                     700.0, //CartTotalPrice
                     550.0, //DiscountedPrice
+                    150.0, //Campaigns Total Discount
                 }
                 //100*3 + 400*1 -(( 300*20%)+(10*3)+(400*15)) = 550
             };
@@ -94,6 +95,7 @@ namespace ShoppingCart.UnitTests
                 {
                     2000.0, //CartTotalPrice
                     1180.0, //DiscountedPrice
+                    820.0, //Campaigns Total Discount
                 }
                 //100*3 + 150*2 + 400*1 + 200*5  -( (1000*50%)+(300*20%)+(500*20%)+(10*2)+(10*3)+(10*5)+(400*15))=
             };
@@ -117,6 +119,7 @@ namespace ShoppingCart.UnitTests
                 {
                     3800.0, //CartTotalPrice
                     3030.0, //DiscountedPrice
+                    770.0, //Campaigns Total Discount
                 }
                 //              Campaign 1  Campaign 2  Campaign 3   
                 //Iteration 1   3650        3680        3300         campaign 3 applied
@@ -148,7 +151,8 @@ namespace ShoppingCart.UnitTests
             new object[] {
                 700.0,//CartTotalPrice
                 550.0,//DiscountedPrice
-                550.0,//Coupon Discounted Price
+                550.0,//Cart Discounted After Coupon Price
+                0.0,//Coupon Discounted Price
             }
             //100*3 + 400*1 -(( 300*20%)+(10*3)+(400*15)) = 550
             };
@@ -172,7 +176,8 @@ namespace ShoppingCart.UnitTests
             {
                 2000.0,//CartTotalPrice
                 1180.0,//DiscountedPrice
-                1030.0,//Coupon Discounted Price
+                1030.0,//Cart Discounted After Coupon Price
+                150.0,//Coupon Discounted Price
             }
             //100*3 + 150*2 + 400*1 + 200*5  -( (1000*50%)+(300*20%)+(500*20%)+(10*2)+(10*3)+(10*5)+(400*15))=
             };
@@ -196,7 +201,8 @@ namespace ShoppingCart.UnitTests
             {
                 3800.0,//CartTotalPrice
                 3030.0,//DiscountedPrice
-                2727.0,//Coupon Discounted Price
+                2727.0,//Cart Discounted After Coupon Price
+                303.0,//Coupon Discounted Price
             }
             //              Campaign 1  Campaign 2  Campaign 3   
             //Iteration 1   3650        3680        3300         campaign 3 applied
@@ -284,7 +290,10 @@ namespace ShoppingCart.UnitTests
 @"CategoryName        ProductName         Quantity            Unit Price          Total Price              Total Discount(coupon,campaign)applied  
 computer            Mouse               1                   400                 400                      340                                     
 food                Apple               3                   100                 300                      210                                     
-Total Amount:550
+Total Amount:700
+Campaign Discount:150
+Coupon Discount:0
+Total Amount After Discounts:550
 Delivery Cost:14.99
 "
             }
@@ -313,7 +322,10 @@ computer            Mouse               1                   400                 
 food                Almond              2                   150                 300                      280                                     
 food                Apple               3                   100                 300                      210                                     
 food                Banana              5                   200                 1000                     350                                     
-Total Amount:1030
+Total Amount:2000
+Campaign Discount:820
+Coupon Discount:150
+Total Amount After Discounts:1030
 Delivery Cost:16.99
 "
             }
@@ -343,7 +355,10 @@ computer            Mouse               1                   400                 
 food                Almond              2                   150                 300                      270                                     
 food                Apple               3                   100                 300                      255                                     
 food                Banana              5                   200                 1000                     425                                     
-Total Amount:2727
+Total Amount:3800
+Campaign Discount:770
+Coupon Discount:303
+Total Amount After Discounts:2727
 Delivery Cost:17.99
 "
             }

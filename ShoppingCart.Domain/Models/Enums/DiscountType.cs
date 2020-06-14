@@ -1,4 +1,4 @@
-namespace ShoppingCart.UnitTests.Models.Enums
+namespace ShoppingCart.Domain.Models.Enums
 {
     public enum DiscountType
     {
