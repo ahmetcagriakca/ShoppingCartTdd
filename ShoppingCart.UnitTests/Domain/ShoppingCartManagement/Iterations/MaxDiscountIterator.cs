@@ -24,9 +24,9 @@ namespace ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Iterations
             {
                 CalculateCampaignExpectedDiscountValues(cart, campaign);
                 // Expected Total price checked for best discount
-                if (!(minimumTotalPrice > cart.ExpectedDiscountedTotalPrice)) continue;
+                if (!(minimumTotalPrice > cart.ProductsExpectedDiscountedTotalPrice)) continue;
 
-                minimumTotalPrice = cart.ExpectedDiscountedTotalPrice;
+                minimumTotalPrice = cart.ProductsExpectedDiscountedTotalPrice;
                 bestDiscountedCampaign = campaign;
             }
 

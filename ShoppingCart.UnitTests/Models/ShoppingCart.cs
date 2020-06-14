@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Calculators;
 using ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Iterations;
 
 namespace ShoppingCart.UnitTests.Models
@@ -7,14 +8,23 @@ namespace ShoppingCart.UnitTests.Models
     public class ShoppingCart
     {
         private readonly IDiscountIterator _discountIterator;
+        private double? _cartDiscountedPrice;
         private ICollection<ShoppingCartProduct> Products { get; set; }
 
-        public double TotalPrice => Products.Sum(product => product.TotalPrice);
-        public double DiscountedTotalPrice => Products.Sum(product => product.DiscountedPrice);
+        public double CartTotalPrice => Products.Sum(product => product.TotalPrice);
+
+        public double CartDiscountedPrice
+        {
+            get => _cartDiscountedPrice ?? ProductsDiscountedTotalPrice;
+            set => _cartDiscountedPrice = value;
+        }
+
+        public double ProductsDiscountedTotalPrice => Products.Sum(product => product.DiscountedPrice);
+
         /// <summary>
-        ///  
+        ///  Shopping Cart Products Expected Discounted Total Price
         /// </summary>
-        public double ExpectedDiscountedTotalPrice => Products.Sum(product => product.ExpectedDiscountedPrice);
+        public double ProductsExpectedDiscountedTotalPrice => Products.Sum(product => product.ExpectedDiscountedPrice);
 
         public ShoppingCart(IDiscountIterator discountIterator)
         {
@@ -79,6 +89,15 @@ namespace ShoppingCart.UnitTests.Models
                 var campaign = _discountIterator.Iterate(appliedCampaigns, this);
                 appliedCampaigns.Remove(campaign);
             }
+        }
+
+        /// <summary>
+        /// Applying coupon discount
+        /// </summary>
+        /// <param name="coupon"></param>
+        public void ApplyCoupon(Coupon coupon)
+        {
+            CartDiscountedPrice = coupon.CalculateDiscountForCart(ProductsDiscountedTotalPrice);
         }
     }
 }

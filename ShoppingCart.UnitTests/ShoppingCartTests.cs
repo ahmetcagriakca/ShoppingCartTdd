@@ -104,7 +104,7 @@ namespace ShoppingCart.UnitTests
             var campaign = new Coupon(minimumCartAmount, discountPercentage, discountType);
             Assert.NotNull(campaign);
             Assert.Equal(campaign.MinimumCartAmount, minimumCartAmount);
-            Assert.Equal(campaign.DiscountPercentage, discountPercentage);
+            Assert.Equal(campaign.Discount, discountPercentage);
             Assert.Equal(campaign.DiscountType, discountType);
         }
 
@@ -115,7 +115,7 @@ namespace ShoppingCart.UnitTests
         /// <param name="campaign"></param>
         /// <param name="expected">Expected test values
         /// [0] First Item Name
-        /// [1] TotalPrice
+        /// [1] CartTotalPrice
         /// [2] DiscountedPrice 
         /// </param>
         [Theory]
@@ -130,10 +130,10 @@ namespace ShoppingCart.UnitTests
                 cart.AddItem(shoppingCartProduct.Product, shoppingCartProduct.Quantity);
             }
             Assert.Equal(expected[0], cart.GetItems().First().Product.Title);
-            Assert.Equal(expected[1], cart.TotalPrice);
+            Assert.Equal(expected[1], cart.CartTotalPrice);
 
             cart.ApplyDiscounts(campaign);
-            Assert.Equal(expected[2], cart.DiscountedTotalPrice);
+            Assert.Equal(expected[2], cart.ProductsDiscountedTotalPrice);
         }
 
         /// <summary>
@@ -143,9 +143,8 @@ namespace ShoppingCart.UnitTests
         /// <param name="shoppingCartProducts"></param>
         /// <param name="campaigns"></param>
         /// <param name="expected">Expected test values
-        /// [0] First Item Name
-        /// [1] TotalPrice
-        /// [2] DiscountedPrice 
+        /// [0] CartTotalPrice
+        /// [1] DiscountedPrice 
         /// </param>
         [Theory]
         [MemberData(nameof(TestDataGenerator.GetShoppingCartMultipleCampaignsInfos), MemberType = typeof(TestDataGenerator))]
@@ -158,10 +157,42 @@ namespace ShoppingCart.UnitTests
             {
                 cart.AddItem(shoppingCartProduct.Product, shoppingCartProduct.Quantity);
             }
-            Assert.Equal(expected[0], cart.TotalPrice);
+            Assert.Equal(expected[0], cart.CartTotalPrice);
 
             cart.ApplyDiscounts(campaigns.ToArray());
-            Assert.Equal(expected[1], cart.DiscountedTotalPrice);
+            Assert.Equal(expected[1], cart.ProductsDiscountedTotalPrice);
+        }
+
+
+        /// <summary>
+        /// Apply Multiple Campaign Discount for cart
+        /// Maximum Discount Iterator implemented
+        /// </summary>
+        /// <param name="shoppingCartProducts"></param>
+        /// <param name="campaigns"></param>
+        /// <param name="expected">Expected test values
+        /// [0] CartTotalPrice
+        /// [1] DiscountedPrice 
+        /// [2] Coupon Discounted Price 
+        /// </param>
+        [Theory]
+        [MemberData(nameof(TestDataGenerator.GetShoppingCartMultipleCampaignsAndCoupon), MemberType = typeof(TestDataGenerator))]
+        public void Apply_Multiple_Campaigns_Discount_And_Coupon_Discount_For_Cart(IEnumerable<ShoppingCartProduct> shoppingCartProducts, List<Campaign> campaigns,Coupon coupon, object[] expected)
+        {
+            // Create new Shopping Cart
+            var cart = new Models.ShoppingCart(new MaxDiscountIterator());
+            // Products added to cart
+            foreach (var shoppingCartProduct in shoppingCartProducts)
+            {
+                cart.AddItem(shoppingCartProduct.Product, shoppingCartProduct.Quantity);
+            }
+            Assert.Equal(expected[0], cart.CartTotalPrice);
+
+            cart.ApplyDiscounts(campaigns.ToArray());
+            Assert.Equal(expected[1], cart.ProductsDiscountedTotalPrice);
+
+            cart.ApplyCoupon(coupon);
+            Assert.Equal(expected[2], cart.CartDiscountedPrice);
         }
     }
 }
