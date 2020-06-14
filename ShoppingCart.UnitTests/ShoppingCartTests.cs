@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Xunit;
 using System.Linq;
+using ShoppingCart.UnitTests.Domain.DeliveryManagement.Calculators;
 using ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Iterations;
 using ShoppingCart.UnitTests.Models;
 using ShoppingCart.UnitTests.Models.Enums;
@@ -170,6 +171,7 @@ namespace ShoppingCart.UnitTests
         /// </summary>
         /// <param name="shoppingCartProducts"></param>
         /// <param name="campaigns"></param>
+        /// <param name="coupon"></param>
         /// <param name="expected">Expected test values
         /// [0] CartTotalPrice
         /// [1] DiscountedPrice 
@@ -177,7 +179,7 @@ namespace ShoppingCart.UnitTests
         /// </param>
         [Theory]
         [MemberData(nameof(TestDataGenerator.GetShoppingCartMultipleCampaignsAndCoupon), MemberType = typeof(TestDataGenerator))]
-        public void Apply_Multiple_Campaigns_Discount_And_Coupon_Discount_For_Cart(IEnumerable<ShoppingCartProduct> shoppingCartProducts, List<Campaign> campaigns,Coupon coupon, object[] expected)
+        public void Apply_Multiple_Campaigns_Discount_And_Coupon_Discount_For_Cart(IEnumerable<ShoppingCartProduct> shoppingCartProducts, List<Campaign> campaigns, Coupon coupon, object[] expected)
         {
             // Create new Shopping Cart
             var cart = new Models.ShoppingCart(new MaxDiscountIterator());
@@ -193,6 +195,32 @@ namespace ShoppingCart.UnitTests
 
             cart.ApplyCoupon(coupon);
             Assert.Equal(expected[2], cart.CartDiscountedPrice);
+        }
+
+
+
+        /// <summary>
+        /// Apply Multiple Campaign Discount for cart
+        /// Maximum Discount Iterator implemented
+        /// </summary>
+        /// <param name="shoppingCartProducts"></param>
+        /// <param name="deliveryCostCalculator"></param>
+        /// <param name="expected">Expected test values
+        /// [0] DeliveryCost
+        /// </param>
+        [Theory]
+        [MemberData(nameof(TestDataGenerator.GetShoppingCartForDeliveryCost), MemberType = typeof(TestDataGenerator))]
+        public void Calculate_Delivery_Cost_For_Cart(IEnumerable<ShoppingCartProduct> shoppingCartProducts, DeliveryCostCalculator deliveryCostCalculator, object[] expected)
+        {
+            // Create new Shopping Cart
+            var cart = new Models.ShoppingCart(new MaxDiscountIterator(), deliveryCostCalculator);
+            // Products added to cart
+            foreach (var shoppingCartProduct in shoppingCartProducts)
+            {
+                cart.AddItem(shoppingCartProduct.Product, shoppingCartProduct.Quantity);
+            }
+            var deliveryCost = cart.GetDeliveryCost();
+            Assert.Equal(expected[0], deliveryCost);
         }
     }
 }

@@ -164,3 +164,26 @@ Scenario 10 - Coupons have minimum cart amount constraint. If Cart amount is les
 Scenario 11 - Delivery Cost is Dynamic. Based on the number of deliveries and number of products.
 
 Scenario 12 - Implement a class that takes a cart and calculates the delivery cost.
+
+
+	Cases
+		1 -	ShoppingCartProduct: [	{ Product: { Title: "Mouse", Price: 400, Category: { Title: "computer" }, Quantity: 1},
+									{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3}]
+			Expected: { DeliveryCost:14.99}
+            // Delivery Cost = 5*2+1*2+2.99
+
+		2 -	ShoppingCartProduct: [	{ Product: { Title: "Mouse", Price: 400, Category: { Title: "computer" }, Quantity: 1},
+									{ Product: { Title: "Almond", Price: 150, Category: { Title: "food" }, Quantity: 2},
+									{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3},
+									{ Product: { Title: "Banana", Price: 200, Category: { Title: "food" }, Quantity: 5},]
+			Expected: { DeliveryCost:15.99}
+            // Delivery Cost = 5*2+1*4+2.99
+			
+		3 -	ShoppingCartProduct: [	{ Product: { Title: "Keyboard", Price: 600, Category: { Title: "computer" }, Quantity: 3},
+									{ Product: { Title: "Mouse", Price: 400, Category: { Title: "computer" }, Quantity: 1},
+									{ Product: { Title: "Almond", Price: 150, Category: { Title: "food" }, Quantity: 2},
+									{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3},
+									{ Product: { Title: "Banana", Price: 200, Category: { Title: "food" }, Quantity: 5},
+									]
+			Expected: { DeliveryCost:17.99}
+            // Delivery Cost = 5*2+1*5+2.99

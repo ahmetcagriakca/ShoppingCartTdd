@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ShoppingCart.UnitTests.Domain.DeliveryManagement.Calculators;
 using ShoppingCart.UnitTests.Models;
 using ShoppingCart.UnitTests.Models.Enums;
 
@@ -202,6 +203,59 @@ namespace ShoppingCart.UnitTests
             //Iteration 2   3150        3180        X            campaign 1 applied
             //Iteration 3   X           3030        X            campaign 2 applied
 
+            };
+        }
+
+        /// <summary>
+        /// Genereating Data for Shopping Cart Multiple Campaign and coupon
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<object[]> GetShoppingCartForDeliveryCost()
+        {
+            yield return new object[]
+            {
+            new List<ShoppingCartProduct>{
+                new ShoppingCartProduct( new Product ("Mouse",400,new Category("computer")),1),
+                new ShoppingCartProduct( new Product ("Apple",100,new Category("food")),3),
+            },
+            new DeliveryCostCalculator(5.0,1.0,2.99),
+            new object[]
+            {
+                14.99,//Delivery Cost
+            }
+            // Delivery Cost = 5*2+1*2+2.99
+            };
+            yield return new object[]
+            {
+            new List<ShoppingCartProduct>{
+                new ShoppingCartProduct( new Product ("Mouse",400,new Category("computer")),1),
+                new ShoppingCartProduct( new Product ("Almond",150,new Category("food")),2),
+                new ShoppingCartProduct( new Product ("Apple",100,new Category("food")),3),
+                new ShoppingCartProduct( new Product ("Banana",200,new Category("food")),5),
+            },
+            new DeliveryCostCalculator(5.0,1.0,2.99),
+            new object[]
+            {
+                16.99,//Delivery Cost
+            }
+            // Delivery Cost = 5*2+1*4+2.99
+            };
+            yield return new object[]
+            {
+            new List<ShoppingCartProduct>{
+                new ShoppingCartProduct( new Product ("Keyboard",600,new Category("computer")),3),
+                new ShoppingCartProduct( new Product ("Mouse",400,new Category("computer")),1),
+                new ShoppingCartProduct( new Product ("Mouse",400,new Category("computer")),1),
+                new ShoppingCartProduct( new Product ("Almond",150,new Category("food")),2),
+                new ShoppingCartProduct( new Product ("Apple",100,new Category("food")),3),
+                new ShoppingCartProduct( new Product ("Banana",200,new Category("food")),5),
+            },
+            new DeliveryCostCalculator(5.0,1.0,2.99),
+            new object[]
+            {
+                17.99,//Delivery Cost
+            }
+            // Delivery Cost = 5*2+1*5+2.99
             };
         }
     }

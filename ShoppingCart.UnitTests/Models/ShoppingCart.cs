@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using ShoppingCart.UnitTests.Domain.DeliveryManagement.Calculators;
 using ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Calculators;
 using ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Iterations;
 
@@ -7,7 +8,12 @@ namespace ShoppingCart.UnitTests.Models
 {
     public class ShoppingCart
     {
+        private readonly IDeliveryCostCalculator _deliveryCostCalculator;
+
         private readonly IDiscountIterator _discountIterator;
+
+        #region Properties
+
         private double? _cartDiscountedPrice;
         private ICollection<ShoppingCartProduct> Products { get; set; }
 
@@ -26,11 +32,37 @@ namespace ShoppingCart.UnitTests.Models
         /// </summary>
         public double ProductsExpectedDiscountedTotalPrice => Products.Sum(product => product.ExpectedDiscountedPrice);
 
+        /// <summary>
+        /// Number Of Deliveries is calculated by the number of distinct categories in the cart.
+        /// </summary>
+        public double NumberOfDeliveries => Products.GroupBy(en => en.Product.Category.Title).Count();
+
+        /// <summary>
+        /// NumberOfProducts is the number of different products in the cart
+        /// Product added with title 
+        /// </summary>
+        public double NumberOfProducts => Products.Count;
+
+        /// <summary>
+        /// Get Delivery Cost
+        /// </summary>
+        private double DeliveryCost => _deliveryCostCalculator?.CalculateFor(this) ?? 0;
+        #endregion Properties
+
+        #region Constractor
+
         public ShoppingCart(IDiscountIterator discountIterator)
         {
             _discountIterator = discountIterator;
             Products = new List<ShoppingCartProduct>();
         }
+
+        public ShoppingCart(IDiscountIterator discountIterator, IDeliveryCostCalculator deliveryCostCalculator) : this(discountIterator)
+        {
+            _deliveryCostCalculator = deliveryCostCalculator;
+        }
+
+        #endregion Constractor
 
         /// <summary>
         /// Add Product To Cart with Quantity
@@ -39,7 +71,15 @@ namespace ShoppingCart.UnitTests.Models
         /// <param name="quantity">Product Quantity</param>
         public void AddItem(Product product, int quantity)
         {
-            Products.Add(new ShoppingCartProduct(product, quantity));
+            var productFound = Products.FirstOrDefault(en => en.Product.Title == product.Title);
+            if (productFound != null)
+            {
+                productFound.Quantity += quantity;
+            }
+            else
+            {
+                Products.Add(new ShoppingCartProduct(product, quantity));
+            }
         }
 
         /// <summary>
@@ -99,5 +139,12 @@ namespace ShoppingCart.UnitTests.Models
         {
             CartDiscountedPrice = coupon.CalculateDiscountForCart(ProductsDiscountedTotalPrice);
         }
+
+
+        /// <summary>
+        /// calculating delivery cost and return 
+        /// </summary>
+        public double GetDeliveryCost() => DeliveryCost;
     }
+
 }
