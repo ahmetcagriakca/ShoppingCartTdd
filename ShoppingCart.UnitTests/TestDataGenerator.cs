@@ -167,7 +167,6 @@ namespace ShoppingCart.UnitTests
                 new Campaign( new Category("food"),10.0, 2, DiscountType.Amount),
                 new Campaign( new Category("computer"),15.0, 1, DiscountType.Rate),
             },
-            new Coupon(1500,10,DiscountType.Rate),
             new Coupon(1000,150,DiscountType.Amount),
             new object[]
             {

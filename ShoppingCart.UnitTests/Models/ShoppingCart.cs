@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ShoppingCart.UnitTests.Domain.DeliveryManagement.Calculators;
-using ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Calculators;
 using ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Iterations;
 
 namespace ShoppingCart.UnitTests.Models
