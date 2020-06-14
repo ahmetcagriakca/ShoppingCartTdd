@@ -1,6 +1,3 @@
-using System;
-using System.Drawing;
-
 namespace ShoppingCart.UnitTests.Models
 {
     public class Category

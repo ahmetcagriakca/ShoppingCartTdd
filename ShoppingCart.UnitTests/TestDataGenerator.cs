@@ -92,6 +92,32 @@ namespace ShoppingCart.UnitTests
                 }
                 //100*3 + 150*2 + 400*1 + 200*5  -( (1000*50%)+(300*20%)+(500*20%)+(10*2)+(10*3)+(10*5)+(400*15))=
             };
+            yield return new object[]
+            {
+                new List<ShoppingCartProduct>{
+                    new ShoppingCartProduct( new Product ("Keyboard",600,new Category("computer")),3),
+                    new ShoppingCartProduct( new Product ("Mouse",400,new Category("computer")),1),
+                    new ShoppingCartProduct( new Product ("Almond",150,new Category("food")),2),
+                    new ShoppingCartProduct( new Product ("Apple",100,new Category("food")),3),
+                    new ShoppingCartProduct( new Product ("Banana",200,new Category("food")),5),
+                },
+                new List<Campaign>
+                {
+                    new Campaign( new Category("food"),15.0, 2, DiscountType.Amount),
+                    new Campaign( new Category("computer"),30, 1, DiscountType.Amount),
+                    new Campaign( new Category("food"),50.0, 5, DiscountType.Rate),
+                },
+                new object[]
+                {
+                    3800.0,//TotalPrice
+                    3030.0,//DiscountedPrice
+                }
+                //              Campaign 1  Campaign 2  Campaign 3   
+                //Iteration 1   3650        3680        3300         campaign 3 applied
+                //Iteration 2   3150        3180        X            campaign 1 applied
+                //Iteration 3   X           3030        X            campaign 2 applied
+
+            };
         }
     }
 }

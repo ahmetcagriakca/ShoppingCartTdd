@@ -1,55 +1,83 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using ShoppingCart.UnitTests.Models.Enums;
+using ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Iterations;
 
 namespace ShoppingCart.UnitTests.Models
 {
     public class ShoppingCart
     {
+        private readonly IDiscountIterator _discountIterator;
         private ICollection<ShoppingCartProduct> Products { get; set; }
 
         public double TotalPrice => Products.Sum(product => product.TotalPrice);
         public double DiscountedTotalPrice => Products.Sum(product => product.DiscountedPrice);
+        /// <summary>
+        ///  
+        /// </summary>
+        public double ExpectedDiscountedTotalPrice => Products.Sum(product => product.ExpectedDiscountedPrice);
 
-        public ShoppingCart()
+        public ShoppingCart(IDiscountIterator discountIterator)
         {
+            _discountIterator = discountIterator;
             Products = new List<ShoppingCartProduct>();
         }
 
+        /// <summary>
+        /// Add Product To Cart with Quantity
+        /// </summary>
+        /// <param name="product">Product</param>
+        /// <param name="quantity">Product Quantity</param>
         public void AddItem(Product product, int quantity)
         {
             Products.Add(new ShoppingCartProduct(product, quantity));
         }
 
+        /// <summary>
+        /// Get Cart Products
+        /// </summary>
+        /// <returns></returns>
         public ICollection<ShoppingCartProduct> GetItems() => Products;
 
+        /// <summary>
+        /// Get Products Count
+        /// </summary>
+        /// <returns></returns>
         public int ItemCount() => Products.Count;
 
-        public void ApplyDiscount(params Campaign[] campaigns)
+        /// <summary>
+        /// Clear Product expected values in cart
+        /// </summary>
+        public void ClearExpectedValues()
         {
-            foreach (var campaign in campaigns)
+            foreach (var product in Products)
             {
+                product.ClearExpectedValues();
+            }
+        }
 
-                var campaignProducts = Products.Where(en => en.Product.Category.Title == campaign.Category.Title).ToList();
-                //Apply discount on items if category item count bigger than campaign minimum item count
-                //if (campaignProducts.Sum(en => en.Quantity) < campaign.MinimumItemCount) return;
+        /// <summary>
+        /// Clear Product expected values in cart
+        /// </summary>
+        public void ApplyExpectedDiscounts()
+        {
+            foreach (var product in Products)
+            {
+                product.ApplyDiscount();
+            }
+        }
 
-                foreach (var product in campaignProducts)
-                {
-                    if(product.Quantity < campaign.MinimumItemCount) continue;
-                    switch (campaign.DiscountType)
-                    {
-                        case DiscountType.Rate:
-                            product.DiscountedPrice = product.DiscountedPrice - product.DiscountedPrice * campaign.Discount / 100;
-                            break;
-                        case DiscountType.Amount:
-                            product.DiscountedPrice = product.DiscountedPrice - campaign.Discount * product.Quantity;
-                            break;
-                    }
-
-                }
+        /// <summary>
+        /// Apply Discount with iteration
+        /// </summary>
+        /// <param name="campaigns">Campaigns discount </param>
+        public void ApplyDiscounts(params Campaign[] campaigns)
+        {
+            var lengthOfIteration = campaigns.Length;
+            var appliedCampaigns = campaigns.ToList();
+            for (var i = 0; i < lengthOfIteration; i++)
+            {
+                var campaign = _discountIterator.Iterate(appliedCampaigns, this);
+                appliedCampaigns.Remove(campaign);
             }
         }
     }

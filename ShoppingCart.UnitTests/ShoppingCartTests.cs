@@ -1,8 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Xunit;
 using System.Linq;
+using ShoppingCart.UnitTests.Domain.ShoppingCartManagement.Iterations;
 using ShoppingCart.UnitTests.Models;
 using ShoppingCart.UnitTests.Models.Enums;
 
@@ -66,7 +65,7 @@ namespace ShoppingCart.UnitTests
             // Product create with category
             var product = new Product(productTitle, productPrice, category);
             // Create new Shopping Cart
-            var cart = new Models.ShoppingCart();
+            var cart = new Models.ShoppingCart(new MaxDiscountIterator());
             // New Item added to cart
             cart.AddItem(product, quantity);
             Assert.True(cart.ItemCount() == 1);
@@ -110,15 +109,22 @@ namespace ShoppingCart.UnitTests
         }
 
         /// <summary>
-        /// Apply Discount for added cart products
+        /// Apply Campaign Discount for cart 
         /// </summary>
+        /// <param name="shoppingCartProducts"></param>
+        /// <param name="campaign"></param>
+        /// <param name="expected">Expected test values
+        /// [0] First Item Name
+        /// [1] TotalPrice
+        /// [2] DiscountedPrice 
+        /// </param>
         [Theory]
         [MemberData(nameof(TestDataGenerator.GetShoppingCartInfos), MemberType = typeof(TestDataGenerator))]
-        public void ApplyDiscount_For_Cart(List<ShoppingCartProduct> shoppingCartProducts, Campaign campaign, object[] expected)
+        public void ApplyDiscount_For_Cart(IEnumerable<ShoppingCartProduct> shoppingCartProducts, Campaign campaign, object[] expected)
         {
             // Create new Shopping Cart
-            var cart = new Models.ShoppingCart();
-            // New Item added to cart
+            var cart = new Models.ShoppingCart(new MaxDiscountIterator());
+            // Products added to cart
             foreach (var shoppingCartProduct in shoppingCartProducts)
             {
                 cart.AddItem(shoppingCartProduct.Product, shoppingCartProduct.Quantity);
@@ -126,27 +132,35 @@ namespace ShoppingCart.UnitTests
             Assert.Equal(expected[0], cart.GetItems().First().Product.Title);
             Assert.Equal(expected[1], cart.TotalPrice);
 
-            cart.ApplyDiscount(campaign);
+            cart.ApplyDiscounts(campaign);
             Assert.Equal(expected[2], cart.DiscountedTotalPrice);
         }
 
         /// <summary>
-        /// Apply Discount for added cart products
+        /// Apply Multiple Campaign Discount for cart
+        /// Maximum Discount Iterator implemented
         /// </summary>
+        /// <param name="shoppingCartProducts"></param>
+        /// <param name="campaigns"></param>
+        /// <param name="expected">Expected test values
+        /// [0] First Item Name
+        /// [1] TotalPrice
+        /// [2] DiscountedPrice 
+        /// </param>
         [Theory]
         [MemberData(nameof(TestDataGenerator.GetShoppingCartMultipleCampaignsInfos), MemberType = typeof(TestDataGenerator))]
-        public void Apply_Multiple_Campigns_Discount_For_Cart(List<ShoppingCartProduct> shoppingCartProducts, List<Campaign> campaigns, object[] expected)
+        public void Apply_Multiple_Campaigns_Discount_For_Cart(IEnumerable<ShoppingCartProduct> shoppingCartProducts, List<Campaign> campaigns, object[] expected)
         {
             // Create new Shopping Cart
-            var cart = new Models.ShoppingCart();
-            // New Item added to cart
+            var cart = new Models.ShoppingCart(new MaxDiscountIterator());
+            // Products added to cart
             foreach (var shoppingCartProduct in shoppingCartProducts)
             {
                 cart.AddItem(shoppingCartProduct.Product, shoppingCartProduct.Quantity);
             }
             Assert.Equal(expected[0], cart.TotalPrice);
 
-            cart.ApplyDiscount(campaigns.ToArray());
+            cart.ApplyDiscounts(campaigns.ToArray());
             Assert.Equal(expected[1], cart.DiscountedTotalPrice);
         }
     }

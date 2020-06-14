@@ -85,6 +85,25 @@ Scenario 8.2 - Apply multiple Campaign discount for ShoppingCart
 			Expected: { CartTotalPrice:2000.0, CartDiscountedPrice:1180.0 }
 			//Calculation of DiscountPrice = 100*3 + 150*2 + 400*1 + 200*5  -( (1000*50%)+(300*20%)+(500*20%)+(10*2)+(10*3)+(10*5)+(400*15)) = 1180
 	
+Scenario 8.2 - Apply multiple Campaign discount for ShoppingCart 
+	Cases
+		2 -	ShoppingCartProduct: [	{ Product: { Title: "Keyboard", Price: 600, Category: { Title: "computer" }, Quantity: 3},
+									{ Product: { Title: "Mouse", Price: 400, Category: { Title: "computer" }, Quantity: 1},
+									{ Product: { Title: "Almond", Price: 150, Category: { Title: "food" }, Quantity: 2},
+									{ Product: { Title: "Apple", Price: 100, Category: { Title: "food" }, Quantity: 3},
+									{ Product: { Title: "Banana", Price: 200, Category: { Title: "food" }, Quantity: 5},
+									]
+			Campaign: [	 
+						{ Category: { Title: "food" }, Discount: 15, MinimumItemCount:2, DiscountType: Amount}, 
+						{ Category: { Title: "computer" }, Discount: 30, MinimumItemCount:1, DiscountType: Amount},
+						{ Category: { Title: "food" }, Discount: 50, MinimumItemCount:5, DiscountType: Rate}, 
+						]
+			Expected: { CartTotalPrice:2000.0, CartDiscountedPrice:3030.0 }
+			//Calculation of DiscountPrice 
+            //              Campaign 1  Campaign 2  Campaign 3   
+            //Iteration 1   3650        3680        3300         campaign 3 applied
+            //Iteration 2   3150        3180        X            campaign 1 applied
+            //Iteration 3   X           3030        X            campaign 2 applied
 Scenario 9 - Coupons exist for cart discounts.
     Create Coupon for ShoppingCart discount
     MinimumCartAmount, DiscountPercentage, DiscountType added to Coupon
